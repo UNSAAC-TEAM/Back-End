@@ -1,4 +1,6 @@
 package org.unsaac.es_bim.iam.domain.model.queries.role;
 
-public record GetRoleByNameQuery(String name) {
+import org.unsaac.es_bim.iam.domain.model.valueObjects.Roles;
+
+public record GetRoleByNameQuery(Roles name) {
 }
