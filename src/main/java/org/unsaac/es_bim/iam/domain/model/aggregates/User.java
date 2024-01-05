@@ -1,21 +1,29 @@
 package org.unsaac.es_bim.iam.domain.model.aggregates;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.unsaac.es_bim.iam.domain.model.entities.Role;
+import org.unsaac.es_bim.iam.domain.model.valueObjects.Roles;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "users",uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})})
 @EntityListeners(AuditingEntityListener.class)
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,38 +31,13 @@ public class User {
     private String username;
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles",joinColumns = @JoinColumn(name = "user_id"),inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    private Roles role;
 
-    public User(){
-        this.roles=new HashSet<>();
-    }
 
-    public User(String username,String password){
-        this();
+    public User(String username,String password,String role){
         this.username=username;
         this.password=password;
-    }
-    public User(String username, String password, List<Role> roles) {
-        this(username, password);
-        addRoles(roles);
-    }
-
-    /**
-     * Add a role to the user
-     * @param role the role to add
-     * @return the user with the new role
-     */
-    public User addRole(Role role) {
-        this.roles.add(role);
-        return this;
-    }
-
-    public User addRoles(List<Role> roles) {
-        var validatedRoleSet = Role.validateRoleSet(roles);
-        this.roles.addAll(validatedRoleSet);
-        return this;
+        this.role=Roles.valueOf(role);
     }
 
     @CreatedDate
@@ -64,4 +47,29 @@ public class User {
     @LastModifiedDate
     @Column(nullable = false)
     private Date updatedAt;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority((role.name())));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
 }
