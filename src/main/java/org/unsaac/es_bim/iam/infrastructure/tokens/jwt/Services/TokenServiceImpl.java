@@ -47,12 +47,27 @@ public class TokenServiceImpl implements BearerTokenService {
      * @param username the username to be included in the JWT
      * @return a JWT with default parameters
      */
+
+    private String buildTokenWithIdParameters(String username,Long id){
+        var issuedAt = new Date();
+        var expiration = DateUtils.addDays(issuedAt, expirationDays);
+        var key = getSigningKey();
+        return Jwts.builder()
+                .subject(username)
+                .claim("id",id)
+                .issuedAt(issuedAt)
+                .expiration(expiration)
+                .signWith(key)
+                .compact();
+    }
+
     private String buildTokenWithDefaultParameters(String username) {
         var issuedAt = new Date();
         var expiration = DateUtils.addDays(issuedAt, expirationDays);
         var key = getSigningKey();
         return Jwts.builder()
                 .subject(username)
+
                 .issuedAt(issuedAt)
                 .expiration(expiration)
                 .signWith(key)
@@ -70,6 +85,9 @@ public class TokenServiceImpl implements BearerTokenService {
         return buildTokenWithDefaultParameters(authentication.getName());
     }
 
+    public String generateTokenWithId(String username,Long id){
+        return buildTokenWithIdParameters(username,id);
+    }
     /**
      * Generates a JWT with default parameters
      * @param username the username to be included in the JWT
