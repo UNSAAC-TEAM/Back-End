@@ -11,6 +11,7 @@ import org.unsaac.es_bim.iam.domain.model.commands.user.SignUpCommand;
 import org.unsaac.es_bim.iam.domain.services.user.IUserCommandService;
 import org.unsaac.es_bim.iam.infrastructure.persistence.jpa.repositories.RoleRepository;
 import org.unsaac.es_bim.iam.infrastructure.persistence.jpa.repositories.UserRepository;
+import org.unsaac.es_bim.profiles.domain.model.aggregates.Profile;
 
 import java.util.Optional;
 
@@ -28,6 +29,9 @@ public class UserCommandService implements IUserCommandService {
         var roles = command.roles().stream().map(role -> roleRepository.findByName(role.getName())
                 .orElseThrow(() -> new RuntimeException("Role name not found"))).toList();
         var user = new User(command.username(), hashingService.encode(command.password()), roles);
+        Profile newProfile=new Profile(command.imageUrl(), command.firstName(), command.lastName(), command.birthDay(), command.country(), command.city(), command.genre(), command.phoneNumber(), command.description());
+        user.setProfile(newProfile);
+        newProfile.setAccount(user);
         userRepository.save(user);
         return userRepository.findByUsername(command.username());
     }
