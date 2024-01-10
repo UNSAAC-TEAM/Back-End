@@ -20,7 +20,7 @@ public class User extends AbstractAggregateRoot<User> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
+    private String email;
     private String password;
 
     //Map One account one profile
@@ -38,16 +38,16 @@ public class User extends AbstractAggregateRoot<User> {
     public void setProfile(Profile profile){
         this.profile=profile;
     }
-    public User(String username, String password) {
+    public User(String email, String password) {
         this();
-        this.username = username;
+        this.email = email;
         this.password = password;
         this.createdAt=new Date();
         this.updatedAt=new Date();
     }
 
-    public User(String username, String password, List<Role> roles) {
-        this(username, password);
+    public User(String email, String password, List<Role> roles) {
+        this(email, password);
         addRoles(roles);
     }
 

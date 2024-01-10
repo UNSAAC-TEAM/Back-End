@@ -1,5 +1,6 @@
 package org.unsaac.es_bim.profiles.domain.model.aggregates;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.springframework.data.domain.AbstractAggregateRoot;
@@ -25,6 +26,7 @@ public class Profile extends AbstractAggregateRoot<Profile> {
 
     private String lastName;
 
+    @Nullable
     private Date birthDay;
 
     private String country;
@@ -32,7 +34,7 @@ public class Profile extends AbstractAggregateRoot<Profile> {
     private String city;
 
     @Enumerated(EnumType.STRING)
-    private Genre genre;
+    private Genre gender;
 
     private String phoneNumber;
 
@@ -44,7 +46,14 @@ public class Profile extends AbstractAggregateRoot<Profile> {
     public Profile(){
         this.user=new User();
     }
-    public Profile(String imageUrl,String firstName,String lastName,Date birthDay,String country,String city,String genre,String phoneNumber,String des){
+    public Profile(String firstName,String lastName,String country,String phoneNumber){
+        this.firstName=firstName;
+        this.lastName=lastName;
+        this.country=country;
+        this.phoneNumber=phoneNumber;
+
+    }
+    public Profile(String imageUrl, String firstName, String lastName, Date birthDay, String country, String city, String gender, String phoneNumber, String des){
 
         this.profileImageUrl=imageUrl;
         this.firstName=firstName;
@@ -52,7 +61,7 @@ public class Profile extends AbstractAggregateRoot<Profile> {
         this.birthDay=birthDay;
         this.country=country;
         this.city=city;
-        this.genre=Genre.valueOf(genre);
+        this.gender =Genre.valueOf(gender);
         this.phoneNumber=phoneNumber;
         this.description=des;
     }

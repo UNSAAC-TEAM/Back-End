@@ -38,7 +38,7 @@ public class AuthenticationController {
             return ResponseEntity.notFound().build();
         }
 
-        AuthenticatedUserResource response=new AuthenticatedUserResource(authenticatedUser.get().getLeft().getUsername(),authenticatedUser.get().getRight());
+        AuthenticatedUserResource response=new AuthenticatedUserResource(authenticatedUser.get().getRight(),authenticatedUser.get().getLeft().getId(),authenticatedUser.get().getLeft().getProfile().getFirstName(),authenticatedUser.get().getLeft().getProfile().getLastName(),authenticatedUser.get().getLeft().getEmail(),authenticatedUser.get().getLeft().getProfile().getProfileImageUrl());
 
         return ResponseEntity.ok(response);
     }
