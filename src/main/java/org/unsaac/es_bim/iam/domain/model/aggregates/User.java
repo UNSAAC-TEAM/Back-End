@@ -45,7 +45,12 @@ public class User extends AbstractAggregateRoot<User> {
         this.createdAt=new Date();
         this.updatedAt=new Date();
     }
-
+    public void updateEmail(String email){
+        this.email=email;
+    }
+    public void updatePassword(String password){
+        this.password=password;
+    }
     public User(String email, String password, List<Role> roles) {
         this(email, password);
         addRoles(roles);

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.unsaac.es_bim.iam.application.internal.outboundservices.hashing.HashingService;
 import org.unsaac.es_bim.iam.application.internal.outboundservices.services.TokenService;
 import org.unsaac.es_bim.iam.domain.model.aggregates.User;
+import org.unsaac.es_bim.iam.domain.model.commands.user.EditUserCommand;
 import org.unsaac.es_bim.iam.domain.model.commands.user.SignInCommand;
 import org.unsaac.es_bim.iam.domain.model.commands.user.SignUpCommand;
 import org.unsaac.es_bim.iam.domain.services.user.IUserCommandService;
@@ -45,5 +46,14 @@ public class UserCommandService implements IUserCommandService {
         var token = tokenService.generateTokenWithId(user.get().getEmail(),user.get().getId());
         return Optional.of(ImmutablePair.of(user.get(), token));
 
+    }
+
+    @Override
+    public Long handle(EditUserCommand command) {
+        var user=userRepository.findById(command.userId());
+        if(user.isEmpty()){
+            throw  new RuntimeException("User Not found");
+        }
+        return 1L;
     }
 }

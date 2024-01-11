@@ -53,6 +53,16 @@ public class Profile extends AbstractAggregateRoot<Profile> {
         this.phoneNumber=phoneNumber;
 
     }
+    public void editProfile(String imageUrl, String firstName, String lastName, String country, String city, String gender, String phoneNumber, String des){
+        this.profileImageUrl=imageUrl;
+        this.firstName=firstName;
+        this.lastName=lastName;
+        this.country=country;
+        this.city=city;
+        this.gender =Genre.valueOf(gender);
+        this.phoneNumber=phoneNumber;
+        this.description=des;
+    }
     public Profile(String imageUrl, String firstName, String lastName, Date birthDay, String country, String city, String gender, String phoneNumber, String des){
 
         this.profileImageUrl=imageUrl;
