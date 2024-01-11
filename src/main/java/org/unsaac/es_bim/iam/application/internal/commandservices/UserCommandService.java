@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 import org.unsaac.es_bim.iam.application.internal.outboundservices.hashing.HashingService;
 import org.unsaac.es_bim.iam.application.internal.outboundservices.services.TokenService;
 import org.unsaac.es_bim.iam.domain.model.aggregates.User;
-import org.unsaac.es_bim.iam.domain.model.commands.user.EditUserCommand;
-import org.unsaac.es_bim.iam.domain.model.commands.user.SignInCommand;
-import org.unsaac.es_bim.iam.domain.model.commands.user.SignUpCommand;
+import org.unsaac.es_bim.iam.domain.model.commands.user.*;
 import org.unsaac.es_bim.iam.domain.services.user.IUserCommandService;
 import org.unsaac.es_bim.iam.infrastructure.persistence.jpa.repositories.RoleRepository;
 import org.unsaac.es_bim.iam.infrastructure.persistence.jpa.repositories.UserRepository;
@@ -46,6 +44,25 @@ public class UserCommandService implements IUserCommandService {
         var token = tokenService.generateTokenWithId(user.get().getEmail(),user.get().getId());
         return Optional.of(ImmutablePair.of(user.get(), token));
 
+    }
+
+    @Override
+    public Long handle(ChangeEmailCommand command) {
+        var user=userRepository.findById(command.userId());
+        if (user.isEmpty()) throw new RuntimeException("User not found");
+        if (!hashingService.matches(command.password(), user.get().getPassword()))
+            throw new RuntimeException("Invalid password");
+        user.get().updateEmail(command.newEmail());
+        this.userRepository.save(user.get());
+        return 1L;
+    }
+
+    @Override
+    public Long handle(ChangePasswordCommand command) {
+        var user=userRepository.findById(command.userId());
+        if (user.isEmpty()) throw new RuntimeException("User not found");
+        user.get().updatePassword(hashingService.encode(command.newPassword()));
+        return 1L;
     }
 
     @Override
