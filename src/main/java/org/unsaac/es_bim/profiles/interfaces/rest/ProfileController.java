@@ -3,10 +3,12 @@ package org.unsaac.es_bim.profiles.interfaces.rest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.unsaac.es_bim.profiles.domain.model.commands.ChangeImageUrlByUserIdCommand;
 import org.unsaac.es_bim.profiles.domain.model.commands.EditProfileByUserIdCommand;
 import org.unsaac.es_bim.profiles.domain.model.queries.GetProfileByUserId;
 import org.unsaac.es_bim.profiles.domain.services.IProfileCommandServices;
 import org.unsaac.es_bim.profiles.domain.services.IProfileQueryServices;
+import org.unsaac.es_bim.profiles.interfaces.Resource.ChangeImageProfileResource;
 import org.unsaac.es_bim.profiles.interfaces.Resource.EditProfileResource;
 import org.unsaac.es_bim.profiles.interfaces.Resource.ProfileResource;
 
@@ -34,9 +36,14 @@ public class ProfileController {
 
     @PutMapping("/{userId}/edit")
     public ResponseEntity<Long> editProfileByUserId(@PathVariable("userId") Long userId, @RequestBody EditProfileResource body){
-        var command=new EditProfileByUserIdCommand(userId,body.firstName(), body.lastName(), body.imageUrl(), body.country(), body.city(), body.gender(), body.phoneNumber(), body.description());
+        var command=new EditProfileByUserIdCommand(userId,body.firstName(), body.lastName(),  body.country(), body.city(), body.gender(), body.phoneNumber(), body.description());
         var response=this.profileCommandServices.handle(command);
         return ResponseEntity.ok(response);
-
+    }
+    @PutMapping("/{userId}/changeImageProfile")
+    public ResponseEntity<Long> changeImageProfileByUserId(@PathVariable("userId")Long userId, @RequestBody ChangeImageProfileResource resource){
+        var command=new ChangeImageUrlByUserIdCommand(userId, resource.imageUrl());
+        var response=this.profileCommandServices.handle(command);
+        return ResponseEntity.ok(response);
     }
 }
