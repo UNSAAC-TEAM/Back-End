@@ -36,7 +36,7 @@ public class ProfileController {
 
     @PutMapping("/{userId}/edit")
     public ResponseEntity<Long> editProfileByUserId(@PathVariable("userId") Long userId, @RequestBody EditProfileResource body){
-        var command=new EditProfileByUserIdCommand(userId,body.firstName(), body.lastName(),  body.country(), body.city(), body.gender(), body.phoneNumber(), body.description());
+        var command=new EditProfileByUserIdCommand(userId,body.firstName(), body.lastName(),  body.birthDay(),body.country(), body.city(), body.gender(), body.phoneNumber(), body.description());
         var response=this.profileCommandServices.handle(command);
         return ResponseEntity.ok(response);
     }

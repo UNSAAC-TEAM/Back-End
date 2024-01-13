@@ -22,7 +22,7 @@ public class ProfileCommandService implements IProfileCommandServices {
             throw new RuntimeException("Profile not found");
         }
         else{
-            profile.get().editProfile( command.firstName(), command.lastName(), command.country(), command.city(), command.gender(), command.phoneNumber(), command.description());
+            profile.get().editProfile( command.firstName(), command.lastName(), command.birthDay(),command.country(), command.city(), command.gender(), command.phoneNumber(), command.description());
             this.profileRepository.save(profile.get());
             return 1L;
         }
