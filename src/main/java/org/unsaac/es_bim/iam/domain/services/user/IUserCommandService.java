@@ -12,7 +12,7 @@ public interface IUserCommandService {
     /*If the credentials are correct, returns the user and token*/
     Optional<ImmutablePair<User,String>> handle(SignInCommand command);
     Long handle(ChangeEmailCommand command);
-    Long handle(ChangePasswordCommand command);
+    String handle(ChangePasswordCommand command);
 
     Long handle(EditUserCommand command);
 }

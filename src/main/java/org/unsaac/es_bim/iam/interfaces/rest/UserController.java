@@ -10,6 +10,7 @@ import org.unsaac.es_bim.iam.domain.services.user.IUserCommandService;
 import org.unsaac.es_bim.iam.domain.services.user.IUserQueryService;
 import org.unsaac.es_bim.iam.interfaces.Resources.ChangeUserEmailResource;
 import org.unsaac.es_bim.iam.interfaces.Resources.ChangeUserPasswordResource;
+import org.unsaac.es_bim.iam.interfaces.Resources.GetNewTokenResource;
 import org.unsaac.es_bim.iam.interfaces.Resources.GetUserResource;
 
 @RestController
@@ -43,9 +44,10 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/changePassword")
-    public ResponseEntity<Long> changeUserPasswordByUserId(@PathVariable("userId")Long userId, @RequestBody ChangeUserPasswordResource resource){
+    public ResponseEntity<GetNewTokenResource> changeUserPasswordByUserId(@PathVariable("userId")Long userId, @RequestBody ChangeUserPasswordResource resource){
         var command=new ChangePasswordCommand(userId, resource.newPassword());
-        var response=this.userCommandService.handle(command);
+        var token=this.userCommandService.handle(command);
+        var response= new GetNewTokenResource(token);
         return ResponseEntity.ok(response);
     }
 }
