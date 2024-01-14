@@ -58,11 +58,13 @@ public class UserCommandService implements IUserCommandService {
     }
 
     @Override
-    public Long handle(ChangePasswordCommand command) {
+    public String handle(ChangePasswordCommand command) {
         var user=userRepository.findById(command.userId());
         if (user.isEmpty()) throw new RuntimeException("User not found");
         user.get().updatePassword(hashingService.encode(command.newPassword()));
-        return 1L;
+        this.userRepository.save(user.get());
+        var token= this.tokenService.generateTokenWithId(user.get().getEmail(),user.get().getId());
+        return token;
     }
 
     @Override
