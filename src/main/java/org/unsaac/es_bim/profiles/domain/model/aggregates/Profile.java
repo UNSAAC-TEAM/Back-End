@@ -4,10 +4,13 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.springframework.data.domain.AbstractAggregateRoot;
+import org.unsaac.es_bim.blog.domain.model.aggregate.Blog;
 import org.unsaac.es_bim.iam.domain.model.aggregates.User;
 import org.unsaac.es_bim.profiles.domain.model.valueObjects.Genre;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Entity
@@ -40,6 +43,13 @@ public class Profile extends AbstractAggregateRoot<Profile> {
 
     private String description;
 
+    @OneToMany(mappedBy = "author",cascade = {CascadeType.PERSIST,CascadeType.REMOVE},orphanRemoval = true)
+    private List<Blog> blogs;
+
+    public void addBlog(Blog blog){
+
+        this.blogs.add(blog);
+    }
     public void setAccount(User user){
         this.user=user;
     }
@@ -51,6 +61,7 @@ public class Profile extends AbstractAggregateRoot<Profile> {
         this.lastName=lastName;
         this.country=country;
         this.phoneNumber=phoneNumber;
+        this.blogs= new ArrayList<>();
 
     }
     public void EditImageProfile(String imageUrl){
