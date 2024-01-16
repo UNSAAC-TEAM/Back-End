@@ -23,7 +23,7 @@ public class Blog extends AbstractAggregateRoot<Blog> {
 
     private String description;
 
-    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
 
     private Date publishDate;

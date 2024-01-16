@@ -25,6 +25,7 @@ public class ProfileFacade {
         }
         else{
             profile.get().addBlog(blog);
+            blog.setAuthor(profile.get());
             this.profileRepository.save(profile.get());
             return 1L;
         }

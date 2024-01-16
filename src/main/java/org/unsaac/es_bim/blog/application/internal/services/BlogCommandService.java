@@ -18,6 +18,8 @@ public class BlogCommandService implements IBlogCommandService {
 
     @Override
     public Long handle(CreateBlogCommand command) {
-        return null;
+        Blog blog=new Blog(command.title(), command.label(), command.imageUrl(), command.description(), command.content());
+        Long response=this.profileFacade.AddBlogToProfileByUserId(command.authorId(), blog);
+        return response;
     }
 }
