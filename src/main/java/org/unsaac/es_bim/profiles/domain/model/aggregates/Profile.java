@@ -43,12 +43,13 @@ public class Profile extends AbstractAggregateRoot<Profile> {
 
     private String description;
 
-    @OneToMany(mappedBy = "author",cascade = {CascadeType.PERSIST,CascadeType.REMOVE},orphanRemoval = true)
+    @OneToMany(mappedBy = "profile",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Blog> blogs;
 
     public void addBlog(Blog blog){
 
         this.blogs.add(blog);
+        blog.setAuthor(this);
     }
     public void setAccount(User user){
         this.user=user;

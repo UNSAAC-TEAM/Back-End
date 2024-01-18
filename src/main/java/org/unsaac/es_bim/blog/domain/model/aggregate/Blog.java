@@ -29,11 +29,11 @@ public class Blog extends AbstractAggregateRoot<Blog> {
     private Date publishDate;
 
     @ManyToOne
-    @JoinColumn(name="author_id",nullable = false)
-    private Profile author;
+    @JoinColumn(name="profile_id")
+    private Profile profile;
 
     public void setAuthor(Profile author){
-        this.author=author;
+        this.profile=author;
     }
     public Blog(){}
     public Blog(String title,String label,String imageUrl,String description,String content){
@@ -45,5 +45,6 @@ public class Blog extends AbstractAggregateRoot<Blog> {
         this.publishDate=new Date();
 
     }
+
 
 }

@@ -20,14 +20,13 @@ public class ProfileFacade {
 
     public Long AddBlogToProfileByUserId(Long id, Blog blog){
         var profile=this.profileRepository.findByUserId(id);
-        if(profile.isEmpty()){
-            return 0L;
-        }
-        else{
-            profile.get().addBlog(blog);
+        if(profile.isPresent()){
             blog.setAuthor(profile.get());
+            profile.get().addBlog(blog);
             this.profileRepository.save(profile.get());
             return 1L;
         }
+        return 0L;
+
     }
 }
