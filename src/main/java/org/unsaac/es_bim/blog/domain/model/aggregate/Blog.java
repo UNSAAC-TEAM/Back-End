@@ -28,9 +28,14 @@ public class Blog extends AbstractAggregateRoot<Blog> {
 
     private Date publishDate;
 
+
     @ManyToOne
     @JoinColumn(name="profile_id")
     private Profile profile;
+
+    public Profile getProfile() {
+        return profile;
+    }
 
     public void setAuthor(Profile author){
         this.profile=author;

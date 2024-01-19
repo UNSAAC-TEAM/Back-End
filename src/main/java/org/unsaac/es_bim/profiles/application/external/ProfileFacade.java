@@ -18,15 +18,11 @@ public class ProfileFacade {
         return profileRepository.findByUserId(id);
     }
 
-    public Long AddBlogToProfileByUserId(Long id, Blog blog){
+    public String getProfileNameByUserId(Long id){
         var profile=this.profileRepository.findByUserId(id);
-        if(profile.isPresent()){
-            blog.setAuthor(profile.get());
-            profile.get().addBlog(blog);
-            this.profileRepository.save(profile.get());
-            return 1L;
+        if(profile.isEmpty()){
+            throw new RuntimeException("User not found");
         }
-        return 0L;
-
+        return profile.get().getFirstName()+" "+profile.get().getLastName();
     }
 }

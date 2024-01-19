@@ -1,10 +1,16 @@
 package org.unsaac.es_bim.blog.interfaces.rest;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.unsaac.es_bim.blog.domain.Services.IBlogCommandService;
+import org.unsaac.es_bim.blog.domain.Services.IBlogQueryService;
 import org.unsaac.es_bim.blog.domain.model.commands.CreateBlogCommand;
+import org.unsaac.es_bim.blog.domain.model.queries.GetBlogByIdQuery;
+import org.unsaac.es_bim.blog.domain.model.queries.GetPageOfBlogs;
+import org.unsaac.es_bim.blog.interfaces.Resource.BlogPageResource;
 import org.unsaac.es_bim.blog.interfaces.Resource.CreateBlogResource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,9 +19,11 @@ import org.apache.logging.log4j.Logger;
 @RequestMapping(value = "api/v1/blog",produces = MediaType.APPLICATION_JSON_VALUE)
 public class BlogController {
     private final IBlogCommandService blogCommandService;
+    private final IBlogQueryService blogQueryService;
     private static final Logger logger = LogManager.getLogger(BlogController.class);
-    public BlogController(IBlogCommandService blogCommandService) {
+    public BlogController(IBlogCommandService blogCommandService, IBlogQueryService blogQueryService) {
         this.blogCommandService = blogCommandService;
+        this.blogQueryService = blogQueryService;
     }
 
     @PostMapping("/{userId}")
@@ -25,5 +33,21 @@ public class BlogController {
         logger.info(command.toString());
         var response=this.blogCommandService.handle(command);
         return ResponseEntity.ok(response);
+    }
+    @GetMapping("/{blogId}")
+    public ResponseEntity<?> getBlogById(@PathVariable("blogId")Long blogId){
+        var query=new GetBlogByIdQuery(blogId);
+        var response=this.blogQueryService.handle(query);
+        if(response.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(response.get());
+    }
+    @GetMapping
+    public ResponseEntity<?> getBlogsByPage(@RequestParam(defaultValue = "0")int page,@RequestParam(defaultValue = "3")int itemsPerPage){
+        var query=new GetPageOfBlogs(page,itemsPerPage);
+        BlogPageResource response=this.blogQueryService.handle(query);
+        return ResponseEntity.ok(response);
+
     }
 }
