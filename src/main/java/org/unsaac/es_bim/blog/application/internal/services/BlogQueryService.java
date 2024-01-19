@@ -39,13 +39,13 @@ public class BlogQueryService implements IBlogQueryService {
             throw new IllegalArgumentException("La página solicitada está fuera de rango.");
         }
         var listBlogs=pageBlogs.getContent().stream().map(this::convertToPageableBlogResource).toList();
-        BlogPageResource response=new BlogPageResource(query.page(),listBlogs);
+        BlogPageResource response=new BlogPageResource(this.blogRepository.findAll().size(),listBlogs);
         return response;
     }
 
     private PageableBlogResource convertToPageableBlogResource(Blog blog){
-        String authorName=this.profileFacade.getProfileNameByUserId(blog.getProfile().getId());
-        PageableBlogResource blogResource=new PageableBlogResource(blog.getId(), authorName,blog.getLabel(),blog.getImageUrl(), blog.getTitle(), blog.getDescription(),blog.getPublishDate());
+        int totalBlogsQuantity=this.blogRepository.findAll().size();
+        PageableBlogResource blogResource=new PageableBlogResource(blog.getId(), totalBlogsQuantity,blog.getLabel(),blog.getImageUrl(), blog.getTitle(), blog.getDescription(),blog.getPublishDate());
         return blogResource;
     }
 }
