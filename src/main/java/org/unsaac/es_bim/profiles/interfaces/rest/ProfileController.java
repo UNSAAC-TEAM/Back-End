@@ -30,7 +30,7 @@ public class ProfileController {
         if(profile.isEmpty()){
             return ResponseEntity.notFound().build();
         }
-        var response=new ProfileResource(profile.get().getFirstName(),profile.get().getLastName(),profile.get().getProfileImageUrl(),profile.get().getBirthDay(),profile.get().getCountry(),profile.get().getCity(),profile.get().getGender().toString(),profile.get().getPhoneNumber(),profile.get().getDescription());
+        var response=new ProfileResource(profile.get().getFirstName(),profile.get().getLastName(),profile.get().getProfileImageUrl(),profile.get().getBirthDay(),profile.get().getCountry(),profile.get().getCity(),profile.get().getGenderOrNull(),profile.get().getPhoneNumber(),profile.get().getDescription());
         return ResponseEntity.ok(response);
     }
 

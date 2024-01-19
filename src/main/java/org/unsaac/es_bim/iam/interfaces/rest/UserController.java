@@ -25,7 +25,8 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<GetUserResource> getUserById(GetUserByIdQuery query){
+    public ResponseEntity<GetUserResource> getUserById(@PathVariable("userId") Long userId){
+        var query=new GetUserByIdQuery(userId);
         var user= this.userQueryService.handle(query);
         if(user.isEmpty()){
             return ResponseEntity.notFound().build();
