@@ -33,7 +33,7 @@ public class BlogQueryService implements IBlogQueryService {
 
     @Override
     public BlogPageResource handle(GetPageOfBlogs query) {
-        Pageable pageable= PageRequest.of(query.page()-1, query.itemsPerPage() );
+        Pageable pageable= PageRequest.of(query.page(), query.itemsPerPage() );
         var pageBlogs=this.blogRepository.findAll(pageable);
         if(query.page()>=pageBlogs.getTotalPages()){
             throw new IllegalArgumentException("La página solicitada está fuera de rango.");

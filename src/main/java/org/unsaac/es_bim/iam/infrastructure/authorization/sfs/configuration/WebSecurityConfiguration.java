@@ -100,6 +100,7 @@ public class WebSecurityConfiguration {
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/swagger-resources/**",
+                                "/api/v1/blog/page/**",
                                 "/webjars/**").permitAll()
                         .anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());

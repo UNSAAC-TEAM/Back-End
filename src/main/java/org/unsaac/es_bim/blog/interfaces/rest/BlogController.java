@@ -43,7 +43,7 @@ public class BlogController {
         }
         return ResponseEntity.ok(response.get());
     }
-    @GetMapping
+    @GetMapping("/page/")
     public ResponseEntity<?> getBlogsByPage(@RequestParam(defaultValue = "0")int page,@RequestParam(defaultValue = "3")int itemsPerPage){
         var query=new GetPageOfBlogs(page,itemsPerPage);
         BlogPageResource response=this.blogQueryService.handle(query);
