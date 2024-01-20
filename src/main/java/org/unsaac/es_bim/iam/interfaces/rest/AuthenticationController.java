@@ -20,6 +20,8 @@ import org.unsaac.es_bim.iam.interfaces.Resources.UserResource;
 import org.unsaac.es_bim.iam.interfaces.transform.SignUpCommandFromResourceAssembler;
 import org.unsaac.es_bim.iam.interfaces.transform.UserResourceFromEntityAssembler;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping(value = "/api/v1/auth", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -37,8 +39,11 @@ public class AuthenticationController {
         if (authenticatedUser.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-
-        AuthenticatedUserResource response=new AuthenticatedUserResource(authenticatedUser.get().getRight(),authenticatedUser.get().getLeft().getId(),authenticatedUser.get().getLeft().getProfile().getFirstName(),authenticatedUser.get().getLeft().getProfile().getLastName(),authenticatedUser.get().getLeft().getEmail(),authenticatedUser.get().getLeft().getProfile().getProfileImageUrl());
+        var userResource = UserResourceFromEntityAssembler.toResourceFromEntity(authenticatedUser.get().getLeft());
+        List<String> rolesList = userResource.roles();
+        AuthenticatedUserResource response=new AuthenticatedUserResource(authenticatedUser.get().getRight(),authenticatedUser.get().getLeft().getId(),
+                authenticatedUser.get().getLeft().getProfile().getFirstName(),authenticatedUser.get().getLeft().getProfile().getLastName(),
+                authenticatedUser.get().getLeft().getEmail(),authenticatedUser.get().getLeft().getProfile().getProfileImageUrl(),rolesList.get(0));
 
         return ResponseEntity.ok(response);
     }
