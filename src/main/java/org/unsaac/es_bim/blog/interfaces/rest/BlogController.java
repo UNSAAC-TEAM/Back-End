@@ -38,10 +38,7 @@ public class BlogController {
     public ResponseEntity<?> getBlogById(@PathVariable("blogId")Long blogId){
         var query=new GetBlogByIdQuery(blogId);
         var response=this.blogQueryService.handle(query);
-        if(response.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(response.get());
+        return ResponseEntity.ok(response);
     }
     @GetMapping("/get/page/")
     public ResponseEntity<?> getBlogsByPage(@RequestParam(defaultValue = "0")int page,@RequestParam(defaultValue = "9")int itemsPerPage){

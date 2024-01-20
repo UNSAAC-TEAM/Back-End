@@ -9,6 +9,7 @@ import org.unsaac.es_bim.blog.domain.model.queries.GetBlogByIdQuery;
 import org.unsaac.es_bim.blog.domain.model.queries.GetPageOfBlogs;
 import org.unsaac.es_bim.blog.infrastructure.jpa.BlogRepository;
 import org.unsaac.es_bim.blog.interfaces.Resource.BlogPageResource;
+import org.unsaac.es_bim.blog.interfaces.Resource.GetBlogResource;
 import org.unsaac.es_bim.blog.interfaces.Resource.PageableBlogResource;
 import org.unsaac.es_bim.profiles.application.external.ProfileFacade;
 
@@ -25,10 +26,13 @@ public class BlogQueryService implements IBlogQueryService {
     }
 
     @Override
-    public Optional<Blog> handle(GetBlogByIdQuery query) {
+    public GetBlogResource handle(GetBlogByIdQuery query) {
         var blog=this.blogRepository.findById(query.blogId());
-
-        return blog;
+        if(blog.isEmpty()){
+            throw new RuntimeException("Blogs doesn't exist");
+        }
+        var response=new GetBlogResource(blog.get().getId(),blog.get().getTitle(),blog.get().getLabel(),blog.get().getImageUrl(),blog.get().getDescription(),blog.get().getContent(),blog.get().getPublishDate(),blog.get().getProfile().getId(),blog.get().getProfile().getFullName());
+        return response;
     }
 
     @Override

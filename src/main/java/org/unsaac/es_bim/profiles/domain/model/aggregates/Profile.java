@@ -51,6 +51,10 @@ public class Profile extends AbstractAggregateRoot<Profile> {
         this.blogs.add(blog);
         blog.setAuthor(this);
     }
+
+    public String getFullName(){
+        return this.firstName+" "+this.lastName;
+    }
     public String getGenderOrNull(){
         if(gender==null){
             return null;
