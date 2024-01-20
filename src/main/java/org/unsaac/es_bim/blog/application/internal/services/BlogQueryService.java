@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.unsaac.es_bim.blog.domain.Services.IBlogQueryService;
 import org.unsaac.es_bim.blog.domain.model.aggregate.Blog;
+import org.unsaac.es_bim.blog.domain.model.queries.DeleteBlogByIdQuery;
 import org.unsaac.es_bim.blog.domain.model.queries.GetBlogByIdQuery;
 import org.unsaac.es_bim.blog.domain.model.queries.GetPageOfBlogs;
 import org.unsaac.es_bim.blog.infrastructure.jpa.BlogRepository;
@@ -40,11 +41,21 @@ public class BlogQueryService implements IBlogQueryService {
         Pageable pageable= PageRequest.of(query.page(), query.itemsPerPage() );
         var pageBlogs=this.blogRepository.findAll(pageable);
         if(query.page()>=pageBlogs.getTotalPages()){
-            throw new IllegalArgumentException("La página solicitada está fuera de rango.");
+            throw new IllegalArgumentException("Requested page is out of range");
         }
         var listBlogs=pageBlogs.getContent().stream().map(this::convertToPageableBlogResource).toList();
         BlogPageResource response=new BlogPageResource(this.blogRepository.findAll().size(),listBlogs);
         return response;
+    }
+
+    @Override
+    public Long hadle(DeleteBlogByIdQuery query) {
+        var blog =this.blogRepository.findById(query.blogId());
+        if(blog.isEmpty()){
+            throw new RuntimeException("Blog doesn't exist!!");
+        }
+        this.blogRepository.delete(blog.get());
+        return 1L;
     }
 
     private PageableBlogResource convertToPageableBlogResource(Blog blog){

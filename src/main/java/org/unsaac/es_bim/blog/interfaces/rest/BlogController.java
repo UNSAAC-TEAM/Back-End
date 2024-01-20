@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.unsaac.es_bim.blog.domain.Services.IBlogCommandService;
 import org.unsaac.es_bim.blog.domain.Services.IBlogQueryService;
 import org.unsaac.es_bim.blog.domain.model.commands.CreateBlogCommand;
+import org.unsaac.es_bim.blog.domain.model.queries.DeleteBlogByIdQuery;
 import org.unsaac.es_bim.blog.domain.model.queries.GetBlogByIdQuery;
 import org.unsaac.es_bim.blog.domain.model.queries.GetPageOfBlogs;
 import org.unsaac.es_bim.blog.interfaces.Resource.BlogPageResource;
@@ -44,6 +45,14 @@ public class BlogController {
     public ResponseEntity<?> getBlogsByPage(@RequestParam(defaultValue = "0")int page,@RequestParam(defaultValue = "9")int itemsPerPage){
         var query=new GetPageOfBlogs(page,itemsPerPage);
         BlogPageResource response=this.blogQueryService.handle(query);
+        return ResponseEntity.ok(response);
+
+    }
+
+    @DeleteMapping("/delete/{blogId}")
+    public ResponseEntity<?> deleteBlogById(@PathVariable("blogId")Long blogId){
+        var query=new DeleteBlogByIdQuery(blogId);
+        var response= this.blogQueryService.hadle(query);
         return ResponseEntity.ok(response);
 
     }
