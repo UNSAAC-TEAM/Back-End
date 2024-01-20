@@ -60,7 +60,7 @@ public class BlogQueryService implements IBlogQueryService {
 
     private PageableBlogResource convertToPageableBlogResource(Blog blog){
         int totalBlogsQuantity=this.blogRepository.findAll().size();
-        PageableBlogResource blogResource=new PageableBlogResource(blog.getId(), totalBlogsQuantity,blog.getLabel(),blog.getImageUrl(), blog.getTitle(), blog.getDescription(),blog.getPublishDate());
+        PageableBlogResource blogResource=new PageableBlogResource(blog.getId(), totalBlogsQuantity,blog.getLabel(),blog.getImageUrl(), blog.getTitle(), blog.getDescription(),blog.getPublishDate(),blog.getProfile().getFullName());
         return blogResource;
     }
 }
