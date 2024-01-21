@@ -8,10 +8,11 @@ import org.unsaac.es_bim.blog.domain.model.aggregate.Blog;
 import org.unsaac.es_bim.blog.domain.model.queries.DeleteBlogByIdQuery;
 import org.unsaac.es_bim.blog.domain.model.queries.GetBlogByIdQuery;
 import org.unsaac.es_bim.blog.domain.model.queries.GetPageOfBlogs;
+import org.unsaac.es_bim.blog.domain.model.queries.GetRecommendedBlogsQuery;
 import org.unsaac.es_bim.blog.infrastructure.jpa.BlogRepository;
 import org.unsaac.es_bim.blog.interfaces.Resource.BlogPageResource;
 import org.unsaac.es_bim.blog.interfaces.Resource.GetBlogResource;
-import org.unsaac.es_bim.blog.interfaces.Resource.GetManageableBlogResource;
+import org.unsaac.es_bim.blog.interfaces.Resource.GetPreviewBlogResource;
 import org.unsaac.es_bim.blog.interfaces.Resource.PageableBlogResource;
 import org.unsaac.es_bim.profiles.application.external.ProfileFacade;
 
@@ -38,18 +39,40 @@ public class BlogQueryService implements IBlogQueryService {
     }
 
     @Override
-    public List<GetManageableBlogResource> handle() {
+    public List<GetPreviewBlogResource> handle() {
         List<Blog> blogs = this.blogRepository.findAll();
 
         // Convertir la lista de entidades Blog a una lista de recursos GetManageableBlogResource
-        List<GetManageableBlogResource> manageableBlogs = blogs.stream()
-                .map(this::convertToManageableBlogResource)
+        List<GetPreviewBlogResource> manageableBlogs = blogs.stream()
+                .map(this::convertToPreviewBlogResource)
                 .collect(Collectors.toList());
 
         return manageableBlogs;
     }
-    private GetManageableBlogResource convertToManageableBlogResource(Blog blog) {
-        return new GetManageableBlogResource(
+
+    @Override
+    public List<GetPreviewBlogResource> handle(GetRecommendedBlogsQuery query) {
+        int blogQuantity = query.blogQuantity();
+
+        // Obtener los últimos blogs según la cantidad especificada
+        List<Blog> recentBlogs = blogRepository.findTopNByOrderByPublishDateDesc(blogQuantity);
+
+        // Validar si la cantidad devuelta es menor que la solicitada
+        int actualQuantity = Math.min(blogQuantity, recentBlogs.size());
+
+        // Obtener los primeros blogs de la lista según la cantidad real
+        List<Blog> selectedBlogs = recentBlogs.subList(0, actualQuantity);
+
+        // Convertir los blogs a la representación deseada (GetPreviewBlogResource)
+        List<GetPreviewBlogResource> previewBlogResources = selectedBlogs.stream()
+                .map(this::convertToPreviewBlogResource)
+                .collect(Collectors.toList());
+
+        return previewBlogResources;
+    }
+
+    private GetPreviewBlogResource convertToPreviewBlogResource(Blog blog) {
+        return new GetPreviewBlogResource(
                 blog.getId(),
                 blog.getTitle(),
                 blog.getLabel(),

@@ -11,6 +11,7 @@ import org.unsaac.es_bim.blog.domain.model.commands.CreateBlogCommand;
 import org.unsaac.es_bim.blog.domain.model.queries.DeleteBlogByIdQuery;
 import org.unsaac.es_bim.blog.domain.model.queries.GetBlogByIdQuery;
 import org.unsaac.es_bim.blog.domain.model.queries.GetPageOfBlogs;
+import org.unsaac.es_bim.blog.domain.model.queries.GetRecommendedBlogsQuery;
 import org.unsaac.es_bim.blog.interfaces.Resource.BlogPageResource;
 import org.unsaac.es_bim.blog.interfaces.Resource.CreateBlogResource;
 import org.apache.logging.log4j.LogManager;
@@ -45,6 +46,12 @@ public class BlogController {
     @GetMapping("/get/Blogs")
     public ResponseEntity<?> getAllBlogs(){
         var response=this.blogQueryService.handle();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/get/{blogQuantity}/recommended")
+    public ResponseEntity<?> getRecommendedBlogs(@PathVariable("blogQuantity")int blogQuantity){
+        var response=this.blogQueryService.handle(new GetRecommendedBlogsQuery(blogQuantity));
         return ResponseEntity.ok(response);
     }
 
