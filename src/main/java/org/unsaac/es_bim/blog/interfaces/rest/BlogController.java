@@ -41,6 +41,13 @@ public class BlogController {
         var response=this.blogQueryService.handle(query);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/get/Blogs")
+    public ResponseEntity<?> getAllBlogs(){
+        var response=this.blogQueryService.handle();
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/get/page/")
     public ResponseEntity<?> getBlogsByPage(@RequestParam(defaultValue = "0")int page,@RequestParam(defaultValue = "9")int itemsPerPage){
         var query=new GetPageOfBlogs(page,itemsPerPage);
@@ -48,6 +55,7 @@ public class BlogController {
         return ResponseEntity.ok(response);
 
     }
+
 
     @DeleteMapping("/delete/{blogId}")
     public ResponseEntity<?> deleteBlogById(@PathVariable("blogId")Long blogId){

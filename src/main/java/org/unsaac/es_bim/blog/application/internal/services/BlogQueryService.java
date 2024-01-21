@@ -11,10 +11,11 @@ import org.unsaac.es_bim.blog.domain.model.queries.GetPageOfBlogs;
 import org.unsaac.es_bim.blog.infrastructure.jpa.BlogRepository;
 import org.unsaac.es_bim.blog.interfaces.Resource.BlogPageResource;
 import org.unsaac.es_bim.blog.interfaces.Resource.GetBlogResource;
+import org.unsaac.es_bim.blog.interfaces.Resource.GetManageableBlogResource;
 import org.unsaac.es_bim.blog.interfaces.Resource.PageableBlogResource;
 import org.unsaac.es_bim.profiles.application.external.ProfileFacade;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +37,26 @@ public class BlogQueryService implements IBlogQueryService {
         return response;
     }
 
+    @Override
+    public List<GetManageableBlogResource> handle() {
+        List<Blog> blogs = this.blogRepository.findAll();
+
+        // Convertir la lista de entidades Blog a una lista de recursos GetManageableBlogResource
+        List<GetManageableBlogResource> manageableBlogs = blogs.stream()
+                .map(this::convertToManageableBlogResource)
+                .collect(Collectors.toList());
+
+        return manageableBlogs;
+    }
+    private GetManageableBlogResource convertToManageableBlogResource(Blog blog) {
+        return new GetManageableBlogResource(
+                blog.getId(),
+                blog.getTitle(),
+                blog.getLabel(),
+                blog.getImageUrl(),
+                blog.getPublishDate()
+        );
+    }
     @Override
     public BlogPageResource handle(GetPageOfBlogs query) {
         Pageable pageable= PageRequest.of(query.page(), query.itemsPerPage() );
